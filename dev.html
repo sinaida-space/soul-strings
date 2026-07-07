@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>soul strings — dev harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  #canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+  #video {
+    display: none;
+  }
+  #start {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    letter-spacing: 0.1em;
+    color: #e8e6ff;
+    background: #000;
+    border: 1px solid #ff2a2a;
+    padding: 0.9em 1.6em;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
+  }
+  #start:hover {
+    background: #ff2a2a;
+    color: #000;
+  }
+  #hud {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #9df2ff;
+    opacity: 0.8;
+    pointer-events: none;
+    white-space: pre;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<video id="video" playsinline muted></video>
+<button id="start">&#9654; START</button>
+<div id="hud"></div>
+
+<script type="module">
+import { startCamera, initHands } from './js/hands.js';
+import { AudioEngine } from './js/audio.js';
+import { Interaction } from './js/interaction.js';
+import { Renderer } from './js/render.js';
+
+const startBtn = document.getElementById('start');
+const videoEl = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const hud = document.getElementById('hud');
+
+let renderer, tracker, audio, interaction;
+let lastT = 0;
+let fps = 0;
+let fpsAccum = 0;
+let fpsFrames = 0;
+
+startBtn.addEventListener('click', async () => {
+  startBtn.disabled = true;
+  startBtn.textContent = 'loading…';
+  try {
+    await startCamera(videoEl);
+    tracker = await initHands(videoEl);
+    audio = new AudioEngine();
+    await audio.init();
+    interaction = new Interaction(audio);
+    renderer = new Renderer(canvas);
+    startBtn.remove();
+    lastT = performance.now();
+    requestAnimationFrame(loop);
+  } catch (err) {
+    console.error(err);
+    startBtn.disabled = false;
+    startBtn.textContent = 'error — see console — retry';
+  }
+});
+
+function loop(t) {
+  const dt = Math.min(0.05, (t - lastT) / 1000);
+  lastT = t;
+
+  const handsResult = tracker.detect(t);
+  const state = interaction.update(handsResult, dt);
+  renderer.frame(t, dt, state);
+
+  fpsAccum += dt;
+  fpsFrames++;
+  if (fpsAccum >= 0.5) {
+    fps = Math.round(fpsFrames / fpsAccum);
+    fpsAccum = 0;
+    fpsFrames = 0;
+    hud.textContent = `${fps} fps  |  hands: ${state.hands.length}  |  shimmer: ${state.shimmer.toFixed(2)}`;
+  }
+
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
