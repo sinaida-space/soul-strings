@@ -73,8 +73,9 @@ uniform float uAspect;
 out vec4 fragColor;
 void main() {
   const float horizonY = 0.72; // grid occupies bottom 28% of the frame
-  if (vUv.y < horizonY) { fragColor = vec4(0.0); return; }
-  float t = (vUv.y - horizonY) / (1.0 - horizonY); // 0 at horizon .. 1 at bottom
+  float yd = 1.0 - vUv.y;      // screen-down y: GL varying has y=1 at the top
+  if (yd < horizonY) { fragColor = vec4(0.0); return; }
+  float t = (yd - horizonY) / (1.0 - horizonY); // 0 at horizon .. 1 at bottom
   float z = 1.0 / (t * 9.0 + 0.06);
 
   float rows = abs(fract(z * 0.5 - uTime * 0.12) - 0.5);
