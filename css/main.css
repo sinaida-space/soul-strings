@@ -1,0 +1,465 @@
+/* SOUL_STRINGS — page chrome
+   sinaida.eu DNA × MS-DOS boot terminal × Tron glow */
+
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/vt323-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/space-mono-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/space-mono-bold.woff2') format('woff2');
+}
+
+:root {
+  --bg: #000000;
+  --red: #ff2a2a;
+  --red-dim: #8a0f0f;
+  --star: #e8e6ff;
+  --glow: #9df2ff;
+  --text: #d8d8d8;
+  --font-display: 'VT323';
+  --font-mono: 'Space Mono';
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono), monospace;
+  overflow: hidden;
+}
+
+a {
+  color: var(--red);
+  text-decoration: none;
+}
+
+a:hover {
+  text-shadow: 0 0 8px var(--red);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- scanline / vignette overlay ---------- */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+/* ---------- cooking banner ---------- */
+#cooking-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: var(--bg);
+  color: var(--red);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--red-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  animation: banner-pulse 4s ease-in-out infinite;
+}
+
+@keyframes banner-pulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+/* ---------- header ---------- */
+header {
+  position: fixed;
+  top: 22px;
+  left: 0;
+  right: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  pointer-events: none;
+}
+
+header * {
+  pointer-events: auto;
+}
+
+.wordmark {
+  font-family: var(--font-display), monospace;
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  text-shadow: 0 0 6px var(--red), 0 0 14px var(--red-dim);
+}
+
+header nav a {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+header nav a:hover {
+  color: var(--red);
+  opacity: 1;
+}
+
+/* ---------- scene canvas ---------- */
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: var(--bg);
+}
+
+/* ---------- welcome overlay ---------- */
+#welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.boot-box {
+  max-width: 560px;
+  width: 100%;
+  border: 1px solid var(--red-dim);
+  box-shadow: 0 0 24px rgba(255, 42, 42, 0.15), inset 0 0 24px rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 28px 32px;
+  text-align: left;
+}
+
+.boot-log {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--glow);
+  margin: 0 0 16px;
+}
+
+.boot-log .boot-title {
+  font-family: var(--font-display), monospace;
+  font-size: 1.6rem;
+  color: var(--red);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 6px var(--red);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.boot-log .ok {
+  color: var(--star);
+}
+
+.boot-copy {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 22px;
+}
+
+.boot-copy strong {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.boot-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+#initiate {
+  font-family: var(--font-mono), monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: var(--bg);
+  background: var(--red);
+  border: 1px solid var(--red);
+  padding: 12px 28px;
+  box-shadow: 0 0 16px rgba(255, 42, 42, 0.6);
+  animation: initiate-glow 1.6s ease-in-out infinite;
+}
+
+#initiate::after {
+  content: '\2588';
+  margin-left: 8px;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes initiate-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 42, 42, 0.45); }
+  50% { box-shadow: 0 0 22px rgba(255, 42, 42, 0.85); }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+#no-cam {
+  background: none;
+  border: none;
+  color: var(--text);
+  opacity: 0.55;
+  font-size: 0.75rem;
+  text-decoration: underline;
+}
+
+#no-cam:hover {
+  opacity: 0.9;
+  color: var(--red);
+}
+
+/* ---------- hud ---------- */
+#hud {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+#scale-toggle {
+  display: flex;
+  border: 1px solid var(--red-dim);
+  background: rgba(0, 0, 0, 0.55);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  overflow: hidden;
+}
+
+#scale-toggle button {
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 8px 14px;
+  opacity: 0.6;
+}
+
+#scale-toggle button.active {
+  color: var(--bg);
+  background: var(--red);
+  opacity: 1;
+  text-shadow: none;
+}
+
+#rec-btn {
+  border: 1px solid var(--red-dim);
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--red-dim);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  padding: 8px 14px;
+  letter-spacing: 0.05em;
+}
+
+#rec-btn.recording {
+  color: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 0 14px rgba(255, 42, 42, 0.6);
+  animation: rec-pulse 1s ease-in-out infinite;
+}
+
+@keyframes rec-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ---------- share modal ---------- */
+#share-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 20px;
+}
+
+.share-box {
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid var(--red-dim);
+  box-shadow: 0 0 24px rgba(255, 42, 42, 0.25);
+  background: var(--bg);
+  padding: 20px;
+}
+
+.share-box video {
+  width: 100%;
+  border: 1px solid var(--red-dim);
+  margin-bottom: 16px;
+  background: #000;
+}
+
+.share-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+}
+
+.share-actions a,
+.share-actions button {
+  border: 1px solid var(--red-dim);
+  background: rgba(255, 42, 42, 0.06);
+  color: var(--text);
+  padding: 8px 14px;
+}
+
+.share-actions a:hover,
+.share-actions button:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ---------- hint ---------- */
+#hint {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: 0.55;
+  text-align: center;
+  pointer-events: none;
+}
+
+#hint:empty {
+  display: none;
+}
+
+/* ---------- footer ---------- */
+footer {
+  position: fixed;
+  bottom: 4px;
+  right: 12px;
+  z-index: 45;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  color: var(--text);
+  opacity: 0.45;
+  text-align: right;
+}
+
+footer a {
+  color: var(--text);
+}
+
+footer a:hover {
+  color: var(--red);
+}
+
+/* ---------- state rules ---------- */
+[hidden] {
+  display: none !important;
+}
+
+body[data-state='welcome'] #hud,
+body[data-state='welcome'] #cam {
+  display: none;
+}
+
+body[data-state='live'] #welcome,
+body[data-state='fallback'] #welcome {
+  display: none;
+}
+
+body:not([data-state='live']):not([data-state='fallback']) #hud {
+  display: none;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 480px) {
+  .wordmark {
+    font-size: 1.3rem;
+  }
+
+  header nav a {
+    font-size: 0.7rem;
+  }
+
+  .boot-box {
+    padding: 20px 18px;
+  }
+
+  #hud {
+    left: 12px;
+    bottom: 12px;
+    gap: 8px;
+  }
+
+  footer {
+    display: none;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #cooking-banner,
+  #initiate,
+  #initiate::after,
+  #rec-btn.recording {
+    animation: none !important;
+  }
+}
