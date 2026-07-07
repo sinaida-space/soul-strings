@@ -125,6 +125,8 @@ window.addEventListener('soul:rec-toggle', () => {
       recorder._lastBlob = blob;
       recorder._lastExt = ext;
       UI.showShareModal(shareUrl);
+      const dl = document.querySelector('#download-link');
+      if (dl) dl.download = `soul-strings.${ext}`;
     }
   );
 });
