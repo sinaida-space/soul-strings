@@ -1,0 +1,3 @@
+# Pages (Jekyll) leaves the local test pages out of the published site.
+exclude:
+  - dev.html
